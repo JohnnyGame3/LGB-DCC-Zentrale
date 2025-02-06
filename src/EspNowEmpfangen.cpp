@@ -29,6 +29,12 @@ bool lok1Neu = false;
 bool lok2Neu = false;
 bool weicheNeu = false;
 
+// Daten für Relais
+int relais = 128;
+bool zustandRalais = false;
+bool relaisNeu = false;
+
+
 
 // Struktur für die empfangenen JSON-Daten
 typedef struct struct_message 
@@ -45,8 +51,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
   if (len <= sizeof(receivedData.jsonData)) 
   {
     memcpy(receivedData.jsonData, data, len);  // Kopiere die empfangenen Daten in den Puffer
-    Serial.print("Empfangene JSON-Daten: ");
-    Serial.println(receivedData.jsonData );
+    //Serial.print("Empfangene JSON-Daten: ");
+    //Serial.println(receivedData.jsonData );
 
     // Deserialisieren der JSON-Daten
     JsonDocument doc;  // Korrekte Definition von StaticJsonDocument
@@ -79,11 +85,26 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
       }
       else if (id == 3 || id == 4) // 3 und 4 sind kombiniert
       {
+        int tempWeichenAdresse = doc["weiche"];
+        if(tempWeichenAdresse <= 127)
+        {
         // Daten für Weiche 
         weiche = doc["weiche"];
         zustand3 = doc["zustand"];
 
         weicheNeu = true;
+        }
+        else if(tempWeichenAdresse <= 136)
+        {
+          relais = doc["weiche"];
+          zustandRalais = doc["zustand"];
+
+          relaisNeu = true;
+        }
+        else
+        {
+
+        }
       }
       else
       {
@@ -92,13 +113,13 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
     } 
     else 
     {
-      Serial.print(F("Fehler beim Deserialisieren: "));
-      Serial.println(error.f_str());
+      //Serial.print(F("Fehler beim Deserialisieren: "));
+      //Serial.println(error.f_str());
       return;
     }
   } 
   else 
   {
-    Serial.println("Empfangene Daten überschreiten den Puffer.");
+    //Serial.println("Empfangene Daten überschreiten den Puffer.");
   }
 }

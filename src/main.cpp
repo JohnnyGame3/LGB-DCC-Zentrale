@@ -91,9 +91,9 @@ void createTask(void (*taskFunction)(void *), const char *taskName, uint32_t sta
 void setup()
 {
   // Initialisiere die serielle Kommunikation
-  Serial.begin(115200);
+  //Serial.begin(115200);
 
-  initDisplay();          // Initialisiere das Display
+  //initDisplay();          // Initialisiere das Display
 
 
   // Konfiguriere alle Pins der BTS7960 als Ausgänge
@@ -115,8 +115,9 @@ void setup()
   WiFi.mode(WIFI_STA);
 
   // Initialisiere ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Fehler beim Initialisieren von ESP-NOW");
+  if (esp_now_init() != ESP_OK) 
+  {
+    //Serial.println("Fehler beim Initialisieren von ESP-NOW");
     return;
   }
   //Registriere den Callback für das Empfangen von Daten

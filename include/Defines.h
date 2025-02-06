@@ -61,6 +61,11 @@ extern bool lok1Neu;
 extern bool lok2Neu;
 extern bool weicheNeu;
 
+// Werte fpr die "Internen Relais"ä
+extern int relais;
+extern bool zustandRalais;
+extern bool relaisNeu;
+
 
 // Programmiere Variablen
 

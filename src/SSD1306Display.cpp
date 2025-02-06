@@ -15,7 +15,7 @@ void initDisplay() {
   // Initialisiere das OLED-Display
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) 
   {  // Adresse 0x3C für SSD1306
-    Serial.println(F("SSD1306 nicht gefunden!"));
+    //Serial.println(F("SSD1306 nicht gefunden!"));
     for (;;);  // Hänge, wenn das Display nicht gefunden wird
   }
 
