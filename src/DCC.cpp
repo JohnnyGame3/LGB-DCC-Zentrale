@@ -45,33 +45,18 @@ void DCC_Bit(int microDelay)
   delayMicroseconds(delay_Time);     // Tot zeit um der brücke zeit zum schalten zu geben 
   digitalWrite(LPWM_PIN, HIGH);      // Setzt PWM Links auf 255(Max) (-24V)
   delayMicroseconds(microDelay);     // LOW-Phase
-
-  //digitalWrite(LPWM_PIN,LOW);
-  
-  //BrueckeDeaktivieren(); 
 }
 
- // Funktion zur Generierung eines DCC-Pulses
-void generatePulse(int state) 
-{
-  if (state == 1)               // Wenn 1, Dann wird Ein 1-Bit erzeugt und gesendet  
-  {
-    DCC_Bit(Eins_Bit_Zeit);
-  } else                        // Wenn nicht 1 also 0, Dann wird ein 0-Bit erzeugt und gesendet
-  {
-    DCC_Bit(Null_Bit_Zeit);
-  }
-}
 
 // Funktion zum Erstellen des Adress-Bytes für die Lok
 byte LokByteErstellen(int lokAdresse)
 {
-    // Begrenze die Adresse auf 1 bis 127
-    if (lokAdresse < 1) lokAdresse = 1;     // Mindestadresse ist 1
-    if (lokAdresse > 127) lokAdresse = 127; // Höchstadresse ist 127
+  // Begrenze die Adresse auf 1 bis 127
+  if (lokAdresse < 1) lokAdresse = 1;     // Mindestadresse ist 1
+  if (lokAdresse > 127) lokAdresse = 127; // Höchstadresse ist 127
 
-    // Setze das Adressbyte (Bit 7 ist 0 für Kurzadresse, Bit 6 ist 1 für Adressbefehl)
-    return ((lokAdresse & 0b01111111));     // ((0b11000000 | Bit 7 = 0, Bit 6 = 1)), Bits 5-1 = Lokadresse
+  // Setze das Adressbyte (Bit 7 ist 0 für Kurzadresse, Bit 6 ist 1 für Adressbefehl)
+  return ((lokAdresse & 0b01111111));     // ((0b11000000 | Bit 7 = 0, Bit 6 = 1)), Bits 5-1 = Lokadresse
 }
 
 
@@ -167,6 +152,60 @@ byte FunktionsByteErstellen(int funktion,bool ein)
 }
   
 
+// Funktion zum Erstellen des Adress-Bytes für die Weiche
+byte WeicheByteErstellen(int weichenAdresse) 
+{
+  // Begrenze die Adresse auf den gültigen Bereich (1 bis 127)
+  if (weichenAdresse < 1) weichenAdresse = 1;
+  if (weichenAdresse > 127) weichenAdresse = 127;
+
+  // Setze das Adressbyte (Bit 7 = 0 für Kurzadresse, Bit 6 = 1 für Adressbefehl)
+  return (0b11000000 | (weichenAdresse & 0b00111111));
+}
+
+// Funktion zum Erstellen des Funktionsbytes für die Weiche
+byte WeichenFunktionByteErstellen(bool geschaltet) 
+{
+  byte command = 0b11111000;  // Standardbefehl für Weichen (immer aktiv)
+
+  if (geschaltet) {
+      command |= 0b00000001;  // Schalte die Weiche um (Bit 0 setzen)
+  } else {
+      command &= 0b11111110;  // Setze Weiche auf "gerade" (Bit 0 löschen)
+  }
+
+  return command;
+}
+
+// Methode zum Berechnen eines DCC-Pakets für eine Weiche (Ein-Byte-Version)
+// Adresse: Adresse des Zubehördecoders (z.B. 1 für Adresse 4)
+// Schaltzustand: 0 für Abzweig (links), 1 für Gerade (rechts)
+// byteNum: 1 für erstes Byte, 2 für zweites Byte
+byte berechneWeichenBytePaket(int adresse, bool schaltzustand, int byteNum) 
+{
+  // Berechnung der 11-Bit-Adresse (wir verwenden hier die lineare Adresse)
+  // Die Adresse wird auf die interne Adresse des Decoders abgebildet (Adresse 1 -> interne Adresse 4)
+  int interneAdresse = adresse + 3;  // Adresse 1 entspricht interner Adresse 4
+
+  byte result = 0;
+
+  if (byteNum == 1) {
+      // Setzen des ersten Bytes: 1000 0001
+      result = (0b10000000 | (interneAdresse >> 3));  // 7 höchste Bits der Adresse
+  }
+  else if (byteNum == 2) {
+      // Setzen des zweiten Bytes: 1111 D00R
+      result = (0b11110000 | ((interneAdresse & 0b00000111) << 2));  // 3 niederwertigste Bits der Adresse
+
+      // Setzen des Schaltzustands: D = 1 für Aktivierung, R = 0 für Abzweig / R = 1 für Gerade
+      result |= (schaltzustand << 1);  // Setzen von R für Gerade (rechts)
+      result |= (1 << 3);  // D = 1 für Aktivierung der Weiche
+  }
+
+  return result;
+}
+
+
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
 void SendeGeschwindigkeit(int lokAdresse, int speed, bool fahrtrichtung) 
 {
@@ -183,7 +222,6 @@ void SendeGeschwindigkeit(int lokAdresse, int speed, bool fahrtrichtung)
 }
 
 
-//Noch in Bearbeitung
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
 void SendeFunktion(int lokAdresse, int funktion, bool Zustand) 
 {
@@ -198,7 +236,21 @@ void SendeFunktion(int lokAdresse, int funktion, bool Zustand)
     // Sende das DCC-Paket
     SendeDCCPaket(packet, 3);
 }
-//Noch in Bearbeitung
+
+// Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
+void SendeWeichenFunktion(int weichenAdresse, bool zustand) 
+{
+  byte packet[3];
+
+  // Erstelle das Adressbyte für die gegebene Lokadresse
+  //packet[0] = 0x00; // Für Kurzadressen kann das erste Byte 0 sein
+  packet[0] = berechneWeichenBytePaket(weichenAdresse, zustand, 1); // Berechne das erste Byte des DCC-Pakets für die Weiche
+  packet[1] = berechneWeichenBytePaket(weichenAdresse, zustand, 2); // Berechne das zweite Byte des DCC-Pakets für die Weiche
+  packet[2] = packet[0] ^ packet[1];                      // XOR-Prüfziffer berechnen
+
+  // Sende das DCC-Paket
+  SendeDCCPaket(packet, 3);
+}
 
 
 
@@ -226,11 +278,11 @@ void SendeDCCPaket(byte* packet, int length) // Funktion zum Senden eines DCC-Pa
       {
         if (data & bitMask) 
         {
-          generatePulse(1); // Sende eine "1"
+          DCC_Bit(Eins_Bit_Zeit); // Sende eine "1"
         } 
         else 
         {
-          generatePulse(0); // Sende eine "0"
+          DCC_Bit(Null_Bit_Zeit); // Sende eine "0"
         }
       }
     }
@@ -317,7 +369,7 @@ void VerarbeiteNeueDaten()
   {
     if(weiche <= 128)
     {
-      SendeFunktion(weiche, funktion3, zustand3);
+      SendeWeichenFunktion(weiche, zustand3);
     }
     else
     {

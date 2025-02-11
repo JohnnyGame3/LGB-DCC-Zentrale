@@ -45,8 +45,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
   if (len <= sizeof(receivedData.jsonData)) 
   {
     memcpy(receivedData.jsonData, data, len);  // Kopiere die empfangenen Daten in den Puffer
-    Serial.print("Empfangene JSON-Daten: ");
-    Serial.println(receivedData.jsonData );
+    //Serial.print("Empfangene JSON-Daten: ");
+    //Serial.println(receivedData.jsonData );
 
     // Deserialisieren der JSON-Daten
     JsonDocument doc;  // Korrekte Definition von StaticJsonDocument
@@ -92,13 +92,13 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
     } 
     else 
     {
-      Serial.print(F("Fehler beim Deserialisieren: "));
-      Serial.println(error.f_str());
+      //Serial.print(F("Fehler beim Deserialisieren: "));
+      //Serial.println(error.f_str());
       return;
     }
   } 
   else 
   {
-    Serial.println("Empfangene Daten überschreiten den Puffer.");
+    //Serial.println("Empfangene Daten überschreiten den Puffer.");
   }
 }

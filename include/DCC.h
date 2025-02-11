@@ -12,7 +12,6 @@
 void DCC_Bit(int microDelay);
 void BrueckeDeaktivieren();
 void BrueckeAktivieren();
-void generatePulse(int state);
 void SendeDCCPaket(byte* packet, int length);
 void Leerlaufpaket();
 
@@ -21,10 +20,8 @@ void NeueDecoderAddresseFestlegen(int address);
 
 //Steuer Befehl
 void SendeGeschwindigkeit(int lokAdresse, int speed, bool fahrtrichtung);
-
-//Noch in Bearbeitung
-void SendeFunktion(int lokAdresse, int speed, bool fahrtrichtung, bool lokFaehrt); 
-//Noch in Bearbeitung
+void SendeFunktion(int lokAdresse, int funktion, bool Zustand); 
+void SendeWeichenFunktion(int weichenAdresse, bool zustand); 
 
 void WiederholeBefehle();
 void VerarbeiteNeueDaten();
@@ -33,6 +30,8 @@ void VerarbeiteNeueDaten();
 byte LokByteErstellen(int lokAdresse);
 byte GeschwByteErstellen(int speed, bool fahrtrichtung);
 byte FunktionsByteErstellen(int funktion,bool ein);
-
+byte WeicheByteErstellen(int weichenAdresse); 
+byte WeichenFunktionByteErstellen(bool geschaltet);
+byte berechneWeichenBytePaket(int adresse, bool schaltzustand, int byteNum); 
 
 #endif // DCC_H
