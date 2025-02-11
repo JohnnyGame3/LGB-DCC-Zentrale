@@ -13,6 +13,8 @@ void setup()
   // Initialisiere die serielle Kommunikation
   //Serial.begin(115200);
 
+  //initDisplay();          // Initialisiere das Display
+
   
   // Konfiguriere alle Pins der BTS7960 als Ausgänge
   pinMode(RPWM_PIN, OUTPUT);
@@ -28,7 +30,8 @@ void setup()
   WiFi.mode(WIFI_STA);
 
   // Initialisiere ESP-NOW
-  if (esp_now_init() != ESP_OK) {
+  if (esp_now_init() != ESP_OK) 
+  {
     //Serial.println("Fehler beim Initialisieren von ESP-NOW");
     return;
   }

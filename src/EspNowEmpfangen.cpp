@@ -29,6 +29,12 @@ bool lok1Neu = false;
 bool lok2Neu = false;
 bool weicheNeu = false;
 
+// Daten für Relais
+int relais = 128;
+bool zustandRalais = false;
+bool relaisNeu = false;
+
+
 
 // Struktur für die empfangenen JSON-Daten
 typedef struct struct_message 
@@ -79,11 +85,26 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
       }
       else if (id == 3 || id == 4) // 3 und 4 sind kombiniert
       {
+        int tempWeichenAdresse = doc["weiche"];
+        if(tempWeichenAdresse <= 127)
+        {
         // Daten für Weiche 
         weiche = doc["weiche"];
         zustand3 = doc["zustand"];
 
         weicheNeu = true;
+        }
+        else if(tempWeichenAdresse <= 136)
+        {
+          relais = doc["weiche"];
+          zustandRalais = doc["zustand"];
+
+          relaisNeu = true;
+        }
+        else
+        {
+
+        }
       }
       else
       {
