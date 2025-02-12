@@ -16,10 +16,10 @@ const int OLED_SCL_PIN = 21;    // OLED SCL PIN
 
 
 //DCC Timings
-const unsigned long Eins_Bit_Zeit = 56;         // 1/2  Timer für High/Low side des 1-Bit
-const unsigned long Null_Bit_Zeit = 112;        // 1/2  Timer für High/Low side des 0-Bit
+const unsigned long Eins_Bit_Zeit = 58;         // 1/2  Timer für High/Low side des 1-Bit
+const unsigned long Null_Bit_Zeit = 116;        // 1/2  Timer für High/Low side des 0-Bit
 const unsigned long delay_Time = 5;             // Timer für die dead zeit (Verzögerung zwichen dem umschalten der H-Brücke) (MIN 5 !!)
-const unsigned long zwichenPaketZeit = 500;    // Zeit zwichen den DCC Paketen (Standard 5ms)
+//tconst unsigned long zwichenPaketZeit = 500;    // Zeit zwichen den DCC Paketen (Standard 5ms)
 
 const unsigned long LETZTE_BEFEHLE_WIEDERHOLEN = 500;
 
@@ -31,7 +31,7 @@ const int deadZone = 100; // Größe des Nullbereichs (z.B. +/- 100 um die Mitte
 
 // Wiederholungen
 const int SyncBits = 17;        // Bestimmt die Anzahl an Sync-Bits die vor einem Protokoll gesendet werden (Standard 17)
-const int Wiederholungen = 3;   // Bestimmt die Anzahl wie oft ein Protokoll Wiederholt wird (Standard 3)
+const int Wiederholungen = 4;   // Bestimmt die Anzahl wie oft ein Protokoll Wiederholt wird (Standard 3)
 
 // Modi 
 extern bool fahrmodus;          // Muss in Main auf True gesetzt werden um den Fahrmodus (Normalen Modus) zu aktiviren
