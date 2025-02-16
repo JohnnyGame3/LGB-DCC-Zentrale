@@ -152,30 +152,6 @@ byte FunktionsByteErstellen(int funktion,bool ein)
 }
   
 
-// Funktion zum Erstellen des Adress-Bytes für die Weiche
-byte WeicheByteErstellen(int weichenAdresse) 
-{
-  // Begrenze die Adresse auf den gültigen Bereich (1 bis 127)
-  if (weichenAdresse < 1) weichenAdresse = 1;
-  if (weichenAdresse > 127) weichenAdresse = 127;
-
-  // Setze das Adressbyte (Bit 7 = 0 für Kurzadresse, Bit 6 = 1 für Adressbefehl)
-  return (0b11000000 | (weichenAdresse & 0b00111111));
-}
-
-// Funktion zum Erstellen des Funktionsbytes für die Weiche
-byte WeichenFunktionByteErstellen(bool geschaltet) 
-{
-  byte command = 0b11111000;  // Standardbefehl für Weichen (immer aktiv)
-
-  if (geschaltet) {
-      command |= 0b00000001;  // Schalte die Weiche um (Bit 0 setzen)
-  } else {
-      command &= 0b11111110;  // Setze Weiche auf "gerade" (Bit 0 löschen)
-  }
-
-  return command;
-}
 
 // Methode zum Berechnen eines DCC-Pakets für eine Weiche (Ein-Byte-Version)
 // Adresse: Adresse des Zubehördecoders (z.B. 1 für Adresse 4)
@@ -183,27 +159,38 @@ byte WeichenFunktionByteErstellen(bool geschaltet)
 // byteNum: 1 für erstes Byte, 2 für zweites Byte
 byte berechneWeichenBytePaket(int adresse, bool schaltzustand, int byteNum) 
 {
-  // Berechnung der 11-Bit-Adresse (wir verwenden hier die lineare Adresse)
-  // Die Adresse wird auf die interne Adresse des Decoders abgebildet (Adresse 1 -> interne Adresse 4)
-  int interneAdresse = adresse + 3;  // Adresse 1 entspricht interner Adresse 4
+  // Berechnung der 11-Bit-Adresse
+  int volleAdresse = adresse + 3; // Adresse 1 entspricht interner Adresse 4
+  int A0_A10 = volleAdresse & 0x7FF; // 11-Bit-Adresse extrahieren
 
   byte result = 0;
-
-  if (byteNum == 1) {
-      // Setzen des ersten Bytes: 1000 0001
-      result = (0b10000000 | (interneAdresse >> 3));  // 7 höchste Bits der Adresse
+  
+  if (byteNum == 1) 
+  {
+      // Erstes Byte: 10AA-AAAA (Bits 2 bis 7 der Adresse)
+      result = 0b10000000 | ((A0_A10 >> 2) & 0x3F);
+  } 
+  else if (byteNum == 2) 
+  {
+      // Zweites Byte: 1AAA-DAAR
+      result = 0b10000000;
+      
+      // Höherwertige Adressbits (A8 bis A10, invertiert speichern)
+      result |= ((~A0_A10 >> 8) & 0b0111) << 4;
+      
+      // Aktivierungsbit D = 1 für Aktivierung
+      result |= (1 << 3);
+      
+      // R-Bit für Richtung: 0 für Abzweig, 1 für Gerade
+      result |= (schaltzustand << 0);
+      
+      // Niedrigste Adressbits A0 und A1
+      result = (result & 0b11111101) | ((A0_A10 & 0b00000011) << 1);
   }
-  else if (byteNum == 2) {
-      // Setzen des zweiten Bytes: 1111 D00R
-      result = (0b11110000 | ((interneAdresse & 0b00000111) << 2));  // 3 niederwertigste Bits der Adresse
-
-      // Setzen des Schaltzustands: D = 1 für Aktivierung, R = 0 für Abzweig / R = 1 für Gerade
-      result |= (schaltzustand << 1);  // Setzen von R für Gerade (rechts)
-      result |= (1 << 3);  // D = 1 für Aktivierung der Weiche
-  }
-
+  
   return result;
 }
+
 
 
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
@@ -342,9 +329,9 @@ void Leerlaufpaket()                // Sendet ein Leerlaufpaket wenn kein datenp
 void WiederholeBefehle() 
 {
   SendeGeschwindigkeit(lok1, speed1, richtung1);
-  SendeFunktion(lok1, funktion1, zustand1);
+  SendeFunktion(lok1, funktion1, zustandLok1);
   SendeGeschwindigkeit(lok2, speed2, richtung2);
-  SendeFunktion(lok2, funktion2, zustand2);
+  SendeFunktion(lok2, funktion2, zustandLok2);
   //Serial.println("Wiederholungs Befehl");
 }
 
@@ -355,21 +342,21 @@ void VerarbeiteNeueDaten()
   if(lok1Neu)
   {
     SendeGeschwindigkeit(lok1, speed1, richtung1);
-    SendeFunktion(lok1, funktion1, zustand1);
+    SendeFunktion(lok1, funktion1, zustandLok1);
     lok1Neu = false;
     //Serial.print("Lok 1 neu erhalten und gesendet");
   }
   if(lok2Neu)
   {
     SendeGeschwindigkeit(lok2, speed2, richtung2);
-    SendeFunktion(lok2, funktion2, zustand2);
+    SendeFunktion(lok2, funktion2, zustandLok2);
     lok2Neu = false;  
   }
   if(weicheNeu)
   {
     if(weiche <= 128)
     {
-      SendeWeichenFunktion(weiche, zustand3);
+      SendeWeichenFunktion(weiche, zustandWeiche);
     }
     else
     {

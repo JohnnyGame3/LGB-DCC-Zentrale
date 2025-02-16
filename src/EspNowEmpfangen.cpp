@@ -9,20 +9,20 @@ int id = 1;
 int lok1 = 3;
 int speed1 = 0;
 int funktion1 = 0;
-bool zustand1 = false;
+bool zustandLok1 = false;
 bool richtung1 = true;
      
 // Daten für Lok 2
 int lok2 = 0;
 int speed2 = 0;
 int funktion2 = 0;
-bool zustand2 = false;
+bool zustandLok2 = false;
 bool richtung2 = true;
 
 // Daten für Weichen
 int weiche = 0;
 int funktion3 = 0;
-bool zustand3 = false;
+bool zustandWeiche = false;
 
 // Bool um zu checken ob neue daten erhalten wurden
 bool lok1Neu = false;
@@ -67,7 +67,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
         lok1 = doc["lok"];
         speed1 = doc["speed"];
         funktion1 = doc["funktion"];
-        zustand1 = doc["zustand"];
+        zustandLok1 = doc["zustand"];
         richtung1 = doc["richtung"];
         
         lok1Neu = true;
@@ -78,25 +78,29 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
         lok2 = doc["lok"];
         speed2 = doc["speed"];
         funktion2 = doc["funktion"];
-        zustand2 = doc["zustand"];
+        zustandLok2 = doc["zustand"];
         richtung2 = doc["richtung"];
 
         lok2Neu = true;
       }
-      else if (id == 3 || id == 4) // 3 und 4 sind kombiniert
+      else
+      {
+        
+      }
+      if (id == 3 || id == 4) // 3 und 4 sind kombiniert
       {
         int tempWeichenAdresse = doc["weiche"];
         if(tempWeichenAdresse <= 127)
         {
         // Daten für Weiche 
-        weiche = doc["weiche"];
-        zustand3 = doc["zustand"];
+        weiche = tempWeichenAdresse;
+        zustandWeiche = doc["zustand"];
 
         weicheNeu = true;
         }
         else if(tempWeichenAdresse <= 136)
         {
-          relais = doc["weiche"];
+          relais = tempWeichenAdresse;
           zustandRalais = doc["zustand"];
 
           relaisNeu = true;

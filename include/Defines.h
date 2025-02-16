@@ -52,9 +52,9 @@ extern int funktion1;
 extern int funktion2;
 extern int funktion3;
 extern int weiche;
-extern bool zustand1;
-extern bool zustand2;
-extern bool zustand3;
+extern bool zustandLok1;
+extern bool zustandLok2;
+extern bool zustandWeiche;
 
 // Bool Werte zum checken was übergeben wurde
 extern bool lok1Neu;

@@ -30,8 +30,6 @@ void VerarbeiteNeueDaten();
 byte LokByteErstellen(int lokAdresse);
 byte GeschwByteErstellen(int speed, bool fahrtrichtung);
 byte FunktionsByteErstellen(int funktion,bool ein);
-byte WeicheByteErstellen(int weichenAdresse); 
-byte WeichenFunktionByteErstellen(bool geschaltet);
 byte berechneWeichenBytePaket(int adresse, bool schaltzustand, int byteNum); 
 
 #endif // DCC_H
