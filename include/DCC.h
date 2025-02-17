@@ -20,7 +20,7 @@ void NeueDecoderAddresseFestlegen(int address);
 
 //Steuer Befehl
 void SendeGeschwindigkeit(int lokAdresse, int speed, bool fahrtrichtung);
-void SendeFunktion(int lokAdresse, int funktion, bool Zustand); 
+void SendeFunktion(int lokAdresse, bool funktionen[]);
 void SendeWeichenFunktion(int weichenAdresse, bool zustand); 
 
 void WiederholeBefehle();
@@ -29,7 +29,7 @@ void VerarbeiteNeueDaten();
 //Erstellte Bytes
 byte LokByteErstellen(int lokAdresse);
 byte GeschwByteErstellen(int speed, bool fahrtrichtung);
-byte FunktionsByteErstellen(int funktion,bool ein);
+byte FunktionsByteErstellen(bool funktionen[]);
 byte berechneWeichenBytePaket(int adresse, bool schaltzustand, int byteNum); 
 
 #endif // DCC_H

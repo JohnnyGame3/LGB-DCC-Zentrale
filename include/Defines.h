@@ -16,8 +16,8 @@ const int OLED_SCL_PIN = 21;    // OLED SCL PIN
 
 
 //DCC Timings
-const unsigned long Eins_Bit_Zeit = 58;         // 1/2  Timer für High/Low side des 1-Bit
-const unsigned long Null_Bit_Zeit = 116;        // 1/2  Timer für High/Low side des 0-Bit
+const unsigned long Eins_Bit_Zeit = 56;         // 1/2  Timer für High/Low side des 1-Bit
+const unsigned long Null_Bit_Zeit = 118;        // 1/2  Timer für High/Low side des 0-Bit
 const unsigned long delay_Time = 5;             // Timer für die dead zeit (Verzögerung zwichen dem umschalten der H-Brücke) (MIN 5 !!)
 //tconst unsigned long zwichenPaketZeit = 500;    // Zeit zwichen den DCC Paketen (Standard 5ms)
 
@@ -55,6 +55,10 @@ extern int weiche;
 extern bool zustandLok1;
 extern bool zustandLok2;
 extern bool zustandWeiche;
+
+// Speichern der Bereits übergebenen funktionen
+extern bool lok1Funktionen[13];
+extern bool lok2Funktionen[13];
 
 // Bool Werte zum checken was übergeben wurde
 extern bool lok1Neu;

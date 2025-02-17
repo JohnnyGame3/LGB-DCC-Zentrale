@@ -98,59 +98,41 @@ byte GeschwByteErstellen(int speed, bool fahrtrichtung)
   return command;
 }
 
-// Funktion Zum Erstellen Eines FunktionsBytes (Noch sind nur Einfache Verfügbar)
-byte FunktionsByteErstellen(int funktion,bool ein)
+// Funktion zum Erstellen eines FunktionsBytes aus einem Funktionsarray
+byte FunktionsByteErstellen(bool funktionen[]) 
 {
+    byte command = 0;
 
-  byte command = 0;           // Erstellt ein Temporeres Befehls-Byte
-  int an = ein ? 1 : 0;       // Direkte Zuweisung basierend auf dem booleschen Wert
+    // F0-F4 (Bitmuster 0b10000000)
+    command |= 0b10000000;
+    if (funktionen[0]) command |= (1 << 4);
+    if (funktionen[1]) command |= (1 << 0);
+    if (funktionen[2]) command |= (1 << 1);
+    if (funktionen[3]) command |= (1 << 2);
+    if (funktionen[4]) command |= (1 << 3);
 
- 
-  switch (funktion)           // Erstellt das Byte für die jeweilige Funktion und Zustand
-  {
-    case 0:
-      command = 0b10000000 | (an << 4);  // Setze Bitmuster 0b10000000 und Bit 4 F0
-      break;
-    case 1:
-      command = 0b10000000 | (an << 0);  // Setze Bitmuster 0b10000000 und Bit 0 F1
-      break;
-    case 2:
-      command = 0b10000000 | (an << 1);  // Setze Bitmuster 0b10000000 und Bit 1 F2
-      break;
-    case 3:
-      command = 0b10000000 | (an << 2);  // Setze Bitmuster 0b10000000 und Bit 2 F3
-      break;
-    case 4:
-      command = 0b10000000 | (an << 3);  // Setze Bitmuster 0b10000000 und Bit 3 F4
-      break;
-    case 5:
-      command = 0b10110000 | (an << 0);  // Setze Bitmuster 0b10110000 und Bit 0 F5
-      break;
-    case 6:
-      command = 0b10110000 | (an << 1);  // Setze Bitmuster 0b10110000 und Bit 1 F6
-      break;
-    case 7:
-      command = 0b10110000 | (an << 2);  // Setze Bitmuster 0b10110000 und Bit 2 F7
-      break;
-    case 8:
-      command = 0b10110000 | (an << 3);  // Setze Bitmuster 0b10110000 und Bit 3 F8
-      break;
-    case 9:
-      command = 0b10100000 | (an << 0);  // Setze Bitmuster 0b10100000 und Bit 4 F9
-      break;
-    case 10:
-      command = 0b10100000 | (an << 1);  // Setze Bitmuster 0b10100000 und Bit 0 F10
-      break;
-    case 11:
-      command = 0b10100000 | (an << 2);  // Setze Bitmuster 0b10100000 und Bit 1 F11
-      break;
-    case 12:
-      command = 0b10100000 | (an << 3);  // Setze Bitmuster 0b10100000 und Bit 1 F12
-      break;
-  } 
-  return command;     // Rückgabe des Befehls-Bytes
+    // F5-F8 (Bitmuster 0b10110000)
+    if (funktionen[5] || funktionen[6] || funktionen[7] || funktionen[8]) 
+    {
+      command = 0b10110000;
+      if (funktionen[5]) command |= (1 << 0);
+      if (funktionen[6]) command |= (1 << 1);
+      if (funktionen[7]) command |= (1 << 2);
+      if (funktionen[8]) command |= (1 << 3);
+    }
+
+    // F9-F12 (Bitmuster 0b10100000)
+    if (funktionen[9] || funktionen[10] || funktionen[11] || funktionen[12]) 
+    {
+      command = 0b10100000;
+      if (funktionen[9]) command |= (1 << 0);
+      if (funktionen[10]) command |= (1 << 1);
+      if (funktionen[11]) command |= (1 << 2);
+      if (funktionen[12]) command |= (1 << 3);
+    }
+
+    return command;
 }
-  
 
 
 // Methode zum Berechnen eines DCC-Pakets für eine Weiche (Ein-Byte-Version)
@@ -210,14 +192,14 @@ void SendeGeschwindigkeit(int lokAdresse, int speed, bool fahrtrichtung)
 
 
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
-void SendeFunktion(int lokAdresse, int funktion, bool Zustand) 
+void SendeFunktion(int lokAdresse, bool funktionArray[]) 
 {
     byte packet[3];
 
     // Erstelle das Adressbyte für die gegebene Lokadresse
     //packet[0] = 0x00; // Für Kurzadressen kann das erste Byte 0 sein
     packet[0] = LokByteErstellen(lokAdresse);               // Erstelle das Adressbyte
-    packet[1] = FunktionsByteErstellen(funktion, Zustand);  // Erstellt Funktionsbyte
+    packet[1] = FunktionsByteErstellen(funktionArray);  // Erstellt Funktionsbyte
     packet[2] = packet[0] ^ packet[1];                      // XOR-Prüfziffer berechnen
 
     // Sende das DCC-Paket
@@ -329,9 +311,9 @@ void Leerlaufpaket()                // Sendet ein Leerlaufpaket wenn kein datenp
 void WiederholeBefehle() 
 {
   SendeGeschwindigkeit(lok1, speed1, richtung1);
-  SendeFunktion(lok1, funktion1, zustandLok1);
+  SendeFunktion(lok1, lok1Funktionen);
   SendeGeschwindigkeit(lok2, speed2, richtung2);
-  SendeFunktion(lok2, funktion2, zustandLok2);
+  SendeFunktion(lok2, lok2Funktionen);
   //Serial.println("Wiederholungs Befehl");
 }
 
@@ -342,14 +324,14 @@ void VerarbeiteNeueDaten()
   if(lok1Neu)
   {
     SendeGeschwindigkeit(lok1, speed1, richtung1);
-    SendeFunktion(lok1, funktion1, zustandLok1);
+    SendeFunktion(lok1, lok1Funktionen);
     lok1Neu = false;
     //Serial.print("Lok 1 neu erhalten und gesendet");
   }
   if(lok2Neu)
   {
     SendeGeschwindigkeit(lok2, speed2, richtung2);
-    SendeFunktion(lok2, funktion2, zustandLok2);
+    SendeFunktion(lok2, lok2Funktionen);
     lok2Neu = false;  
   }
   if(weicheNeu)
