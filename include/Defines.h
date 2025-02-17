@@ -31,7 +31,7 @@ const int deadZone = 100; // Größe des Nullbereichs (z.B. +/- 100 um die Mitte
 
 // Wiederholungen
 const int SyncBits = 17;        // Bestimmt die Anzahl an Sync-Bits die vor einem Protokoll gesendet werden (Standard 17)
-const int Wiederholungen = 4;   // Bestimmt die Anzahl wie oft ein Protokoll Wiederholt wird (Standard 3)
+const int Wiederholungen = 5;   // Bestimmt die Anzahl wie oft ein Protokoll Wiederholt wird (Standard 3)
 
 // Modi 
 extern bool fahrmodus;          // Muss in Main auf True gesetzt werden um den Fahrmodus (Normalen Modus) zu aktiviren

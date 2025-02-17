@@ -42,25 +42,21 @@ void setup()
  
 void loop()
 {
-  // Leerlaufpaket kontinuierlich senden
-  Leerlaufpaket();
-
-  // Regelmäßige Befehlswiederholung
-  if (millis() - vergangeneMillis >= LETZTE_BEFEHLE_WIEDERHOLEN) 
-  {
-    vergangeneMillis = millis();
-
-    WiederholeBefehle(); // Lok- und Funktionsbefehle wiederholen
-
-  }
   if(lok1Neu || lok2Neu || weicheNeu)
   {
     VerarbeiteNeueDaten();  // Liest die neuen daten ein und sendet sie direkt
   }
-  else
+  // Regelmäßige Befehlswiederholung
+  else if (millis() - vergangeneMillis >= LETZTE_BEFEHLE_WIEDERHOLEN) 
   {
-
+    vergangeneMillis = millis();
+  
+    WiederholeBefehle(); // Lok- und Funktionsbefehle wiederholen
   }
-  // Der normale loop()-Code bleibt leer oder wird nur minimal verwendet
+  else // Leerlaufpaket kontinuierlich senden
+  {
+    Leerlaufpaket();
+  }
+
 }
 
