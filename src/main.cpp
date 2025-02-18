@@ -6,37 +6,20 @@
 #include "SSD1306Display.h"
 
 unsigned long vergangeneMillis;
-
+unsigned long vergangeneMillisRelais;
  
 void setup()
 {
   // Initialisiere die serielle Kommunikation
   //Serial.begin(115200);
-
-  //initDisplay();          // Initialisiere das Display
-
-  
-  // Konfiguriere alle Pins der BTS7960 als Ausgänge
-  pinMode(RPWM_PIN, OUTPUT);
-  pinMode(LPWM_PIN, OUTPUT);
-  pinMode(REN_PIN, OUTPUT);
-  pinMode(LEN_PIN, OUTPUT);
-
+  SetupH_Bruecke();  // Initialisierung: H-Brücke
 
   BrueckeDeaktivieren();    // Initialisierung: Brücke deaktivieren
 
+  SetupRelais();  // Initialisierung: Relais
 
-    // Setze den ESP32 als Wi-Fi Station
-  WiFi.mode(WIFI_STA);
+  SetupESPNow();  // Initialisiere ESP-NOW
 
-  // Initialisiere ESP-NOW
-  if (esp_now_init() != ESP_OK) 
-  {
-    //Serial.println("Fehler beim Initialisieren von ESP-NOW");
-    return;
-  }
-  //Registriere den Callback für das Empfangen von Daten
-  esp_now_register_recv_cb(OnDataRecv);
 }
  
  
@@ -57,6 +40,16 @@ void loop()
   {
     Leerlaufpaket();
   }
+  if(relaisNeu)
+  {
+    SchalteRelais(weicheRelais,zustandRalais);  // Schaltet die Relais einer Weiche
+    if(millis()- vergangeneMillisRelais >= RELAI_AKTIV_ZEIT)
+    {
+      vergangeneMillisRelais = millis();
 
+      AlleRelaisAusschalten();
+      relaisNeu = false;
+    }
+  }
 }
 

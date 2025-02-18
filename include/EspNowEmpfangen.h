@@ -6,5 +6,7 @@
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len);
 
+void SetupESPNow();
+
 
 #endif  // End-Guard: Endet, falls DEFINES_H bereits definiert ist

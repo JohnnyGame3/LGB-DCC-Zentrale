@@ -12,6 +12,18 @@ const long interval = 6; // Wartezeit von 5 ms
 unsigned long previousMicros = 0;
 bool highPhase = true;
 
+
+#pragma region H-Brücke //----------------------------H-Brücke------------------------------------
+
+void SetupH_Bruecke()
+{
+  // Konfiguriere alle Pins der H-Brücke als Ausgänge
+  pinMode(RPWM_PIN, OUTPUT);
+  pinMode(LPWM_PIN, OUTPUT);
+  pinMode(REN_PIN, OUTPUT);
+  pinMode(LEN_PIN, OUTPUT);
+}
+
 // Deaktiviert beide Seiten der H-Brücke
 void BrueckeDeaktivieren() 
 {
@@ -46,7 +58,7 @@ void DCC_Bit(int microDelay)
   digitalWrite(LPWM_PIN, HIGH);      // Setzt PWM Links auf 255(Max) (-24V)
   delayMicroseconds(microDelay);     // LOW-Phase
 }
-
+#pragma endregion
 
 // Funktion zum Erstellen des Adress-Bytes für die Lok
 byte LokByteErstellen(int lokAdresse)

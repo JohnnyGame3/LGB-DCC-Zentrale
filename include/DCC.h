@@ -6,8 +6,9 @@
 #include "InputFunktionen.h"
 #include "DCCProgrammierung.h"
 #include "EspNowEmpfangen.h"
+#include "Relais.h"
 
-
+void SetupH_Bruecke();
 // Funktionsprototypen
 void DCC_Bit(int microDelay);
 void BrueckeDeaktivieren();
