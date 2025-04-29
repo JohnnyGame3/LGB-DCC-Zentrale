@@ -42,7 +42,7 @@ void DCC_Bit(int microDelay)
   digitalWrite(LPWM_PIN, HIGH);      // Setzt PWM Links auf 255(Max) (-24V)
   delayMicroseconds(microDelay);     // LOW-Phase
 }
-
+#pragma endregion
 
 // Funktion zum Erstellen des Adress-Bytes für die Lok
 byte LokByteErstellen(int lokAdresse)

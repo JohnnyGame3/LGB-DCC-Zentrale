@@ -16,9 +16,9 @@ void SetupRelais()
 
 void SchalteRelais() 
 {
-    if (relais < 128 || relais > 131) return;
+    if (weicheRelais < 128 || weicheRelais > 131) return;
 
-    int index = relais - 128;
+    int index = weicheRelais - 128;
 
     if (zustandRalais == false) 
     {

@@ -30,7 +30,7 @@ bool lok2Neu = false;
 bool weicheNeu = false;
 
 // Daten für Relais
-int relais = 128;
+int weicheRelais = 128;
 bool zustandRalais = false;
 bool relaisNeu = false;
 
@@ -39,8 +39,6 @@ bool lok1Funktionen[13] = {false};
 bool lok2Funktionen[13] = {false};
 int aktuelleLok1 = -1;
 int aktuelleLok2 = -1;
-
-
 
 // Struktur für die empfangenen JSON-Daten
 typedef struct struct_message 
@@ -136,7 +134,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
         }
         else if(tempWeichenAdresse <= 131)
         {
-          relais = tempWeichenAdresse;
+          weicheRelais = tempWeichenAdresse;
           zustandRalais = doc["zustand"];
 
           relaisNeu = true;
@@ -162,4 +160,19 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
   {
     //Serial.println("Empfangene Daten überschreiten den Puffer.");
   }
+}
+
+void SetupESPNow()
+{
+      // Setze den ESP32 als Wi-Fi Station
+      WiFi.mode(WIFI_STA);
+
+      // Initialisiere ESP-NOW
+      if (esp_now_init() != ESP_OK) 
+      {
+        //Serial.println("Fehler beim Initialisieren von ESP-NOW");
+        return;
+      }
+      //Registriere den Callback für das Empfangen von Daten
+      esp_now_register_recv_cb(OnDataRecv);
 }

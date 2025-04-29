@@ -6,7 +6,6 @@
 #include "SSD1306Display.h"
 
 unsigned long vergangeneMillis;
-
 void setup()
 {
   // Initialisiere die serielle Kommunikation
