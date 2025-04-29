@@ -12,28 +12,14 @@ void setup()
   //Serial.begin(115200);
 
   //initDisplay();          // Initialisiere das Display
-  
-  // Konfiguriere alle Pins der BTS7960 als Ausgänge
-  pinMode(RPWM_PIN, OUTPUT);
-  pinMode(LPWM_PIN, OUTPUT);
-  pinMode(REN_PIN, OUTPUT);
-  pinMode(LEN_PIN, OUTPUT);
+
+  SetupH_Bruecke(); // Initialisiere die H-Brücke
 
   SetupRelais();        // Initialisiere die Relais-Pins
 
   BrueckeDeaktivieren();    // Initialisierung: Brücke deaktivieren
 
-  // Setze den ESP32 als Wi-Fi Station
-  WiFi.mode(WIFI_STA);
-
-  // Initialisiere ESP-NOW
-  if (esp_now_init() != ESP_OK) 
-  {
-    //Serial.println("Fehler beim Initialisieren von ESP-NOW");
-    return;
-  }
-  //Registriere den Callback für das Empfangen von Daten
-  esp_now_register_recv_cb(OnDataRecv);
+  SetupESPNow(); // Initialisiere ESP-NOW
 
   BrueckeAktivieren();
 }

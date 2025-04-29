@@ -9,14 +9,6 @@ const int LPWM_PIN = 5;        // Aktivierung der H-Brücke für LPWM
 const int REN_PIN = 6;         // Steuerung der H-Brücke für +24V
 const int LEN_PIN = 7;         // Steuerung der H-Brücke für -24V
 
-const int RELAI1_IN1 = 13;     // Relai blok 1 IN1 (1.Relai)
-const int RELAI1_IN2 = 14;     // Relai blok 1 IN2 (2.Relai)
-const int RELAI1_IN3 = 16;     // Relai blok 1 IN3 (3.Relai)
-const int RELAI1_IN4 = 17;     // Relai blok 1 IN4 (4.Relai)
-const int RELAI2_IN1 = 18;     // Relai blok 2 IN1 (5.Relai)
-const int RELAI2_IN2 = 19;     // Relai blok 2 IN2 (6.Relai)
-const int RELAI2_IN3 = 22;     // Relai blok 2 IN3 (7.Relai)
-const int RELAI2_IN4 = 23;     // Relai blok 2 IN4 (8.Relai)
 
 const int geradePins[4] = {8, 9, 10, 11};
 const int geschaltenPins[4] = {16, 17, 18, 19};
@@ -27,7 +19,7 @@ const unsigned long RelaiAnZeit = 300; // Zeit für die Relais (0.3 Sekunde)
 const unsigned long Eins_Bit_Zeit = 56;         // 1/2  Timer für High/Low side des 1-Bit
 const unsigned long Null_Bit_Zeit = 118;        // 1/2  Timer für High/Low side des 0-Bit
 const unsigned long delay_Time = 2;             // Timer für die dead zeit (Verzögerung zwichen dem umschalten der H-Brücke) (MIN 5 !!)
-//tconst unsigned long zwichenPaketZeit = 500;    // Zeit zwichen den DCC Paketen (Standard 5ms)
+
 
 const unsigned long LETZTE_BEFEHLE_WIEDERHOLEN = 500;
 
@@ -73,7 +65,18 @@ extern int weicheRelais;
 extern bool zustandRalais;
 extern bool relaisNeu;
 
+// Alte Variablen
+const int POTI_PIN = 12;        // Pin für das Potentiometer
+const int SWITCH_PIN = 15;
+const int OLED_SDA_PIN = 20;    // OLED SDA Pin
+const int OLED_SCL_PIN = 21;    // OLED SCL PIN
 
+
+//Display Größe 
+#define SCREEN_HEIGHT 64        // OLED Display Breite
+#define SCREEN_WIDTH 128        // OLED Display Höhe
+
+extern int aktuelleLokAdresse;   // Erstmal nur testweise
 
 //Display Größe 
 #define SCREEN_HEIGHT 64        // OLED Display Breite

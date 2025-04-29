@@ -7,6 +7,16 @@ unsigned long Eins = 58;
 //unsigned long vergangeneMillis = 0; // Global oder statisch definieren
 const long interval = 6; // Wartezeit von 5 ms
 
+#pragma region H-Brücke //----------------------------H-Brücke------------------------------------
+
+void SetupH_Bruecke()
+{
+  // Konfiguriere alle Pins der H-Brücke als Ausgänge
+  pinMode(RPWM_PIN, OUTPUT);
+  pinMode(LPWM_PIN, OUTPUT);
+  pinMode(REN_PIN, OUTPUT);
+  pinMode(LEN_PIN, OUTPUT);
+}
 
 // Deaktiviert beide Seiten der H-Brücke
 void BrueckeDeaktivieren() 
