@@ -124,23 +124,3 @@ bool Befehlaenderungerkannt()
     return(false);
   }
 }
-
-// in Berabeitung
-void AdresseWechseln()
-{
-  if(aktuelleLokAdresse == 3 && (!digitalRead(SWITCH_PIN) == HIGH))
-  {
-    aktuelleLokAdresse = 10;
-    delay(100);
-  }
-  else if (aktuelleLokAdresse == 10 && (!digitalRead(SWITCH_PIN) == HIGH))
-  {
-    aktuelleLokAdresse = 3;
-    delay(100);
-  }
-  else
-  {
-
-  }
-  display.display();
-}

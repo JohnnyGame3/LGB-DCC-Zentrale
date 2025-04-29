@@ -7,14 +7,12 @@
 
 unsigned long vergangeneMillis;
 
- 
 void setup()
 {
   // Initialisiere die serielle Kommunikation
   //Serial.begin(115200);
 
   //initDisplay();          // Initialisiere das Display
-
   
   // Konfiguriere alle Pins der BTS7960 als Ausgänge
   pinMode(RPWM_PIN, OUTPUT);
@@ -22,11 +20,11 @@ void setup()
   pinMode(REN_PIN, OUTPUT);
   pinMode(LEN_PIN, OUTPUT);
 
+  SetupRelais();        // Initialisiere die Relais-Pins
 
   BrueckeDeaktivieren();    // Initialisierung: Brücke deaktivieren
 
-
-    // Setze den ESP32 als Wi-Fi Station
+  // Setze den ESP32 als Wi-Fi Station
   WiFi.mode(WIFI_STA);
 
   // Initialisiere ESP-NOW
@@ -37,6 +35,8 @@ void setup()
   }
   //Registriere den Callback für das Empfangen von Daten
   esp_now_register_recv_cb(OnDataRecv);
+
+  BrueckeAktivieren();
 }
  
  
@@ -57,6 +57,9 @@ void loop()
   {
     Leerlaufpaket();
   }
-
+  if(relaisNeu)
+  {
+    SchalteRelais(); // Schalte Relais ein oder aus
+  }
 }
 

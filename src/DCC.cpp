@@ -8,10 +8,6 @@ unsigned long Eins = 58;
 const long interval = 6; // Wartezeit von 5 ms
 
 
-// Für zeit steuerung 
-unsigned long previousMicros = 0;
-bool highPhase = true;
-
 // Deaktiviert beide Seiten der H-Brücke
 void BrueckeDeaktivieren() 
 {
@@ -31,7 +27,7 @@ void BrueckeAktivieren()
 // Methode die die Bits über die H-brücke senden (Die Bit-Zeit muss angegeben werden) 
 void DCC_Bit(int microDelay)
 {
-  BrueckeAktivieren();
+  //BrueckeAktivieren();
   // sendet das 1-Bit (58 µs HIGH, 58 µs LOW)
   //High phase 
   digitalWrite(LPWM_PIN, LOW);      // Setzt PWM Links auf 0 
@@ -178,32 +174,26 @@ byte berechneWeichenBytePaket(int adresse, bool schaltzustand, int byteNum)
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
 void SendeGeschwindigkeit(int lokAdresse, int speed, bool fahrtrichtung) 
 {
-    byte packet[3];
+  byte packet[3];
 
-    // Erstelle das Adressbyte für die gegebene Lokadresse
-    //packet[0] = 0x00; // Für Kurzadressen kann das erste Byte 0 sein
-    packet[0] = LokByteErstellen(lokAdresse);               // Erstelle das Adressbyte
-    packet[1] = GeschwByteErstellen(speed, fahrtrichtung);  // Erstellt Geschwindigkeitsbyte
-    packet[2] = packet[0] ^ packet[1];                      // XOR-Prüfziffer berechnen
+  packet[0] = LokByteErstellen(lokAdresse);  // Erstelle das Adressbyte
+  packet[1] = GeschwByteErstellen(speed, fahrtrichtung);  // Erstellt Geschwindigkeitsbyte
+  packet[2] = packet[0] ^ packet[1]; // XOR-Prüfziffer berechnen
 
-    // Sende das DCC-Paket
-    SendeDCCPaket(packet, 3);
+  SendeDCCPaket(packet, 3);  // Sende das DCC-Paket
 }
 
 
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
 void SendeFunktion(int lokAdresse, bool funktionArray[]) 
 {
-    byte packet[3];
+  byte packet[3];
 
-    // Erstelle das Adressbyte für die gegebene Lokadresse
-    //packet[0] = 0x00; // Für Kurzadressen kann das erste Byte 0 sein
-    packet[0] = LokByteErstellen(lokAdresse);               // Erstelle das Adressbyte
-    packet[1] = FunktionsByteErstellen(funktionArray);  // Erstellt Funktionsbyte
-    packet[2] = packet[0] ^ packet[1];                      // XOR-Prüfziffer berechnen
+  packet[0] = LokByteErstellen(lokAdresse);      // Erstelle das Adressbyte
+  packet[1] = FunktionsByteErstellen(funktionArray);  // Erstellt Funktionsbyte
+  packet[2] = packet[0] ^ packet[1];            // XOR-Prüfziffer berechnen
 
-    // Sende das DCC-Paket
-    SendeDCCPaket(packet, 3);
+  SendeDCCPaket(packet, 3); // Sende das DCC-Paket
 }
 
 // Funktion zum Senden eines DCC-Pakets für Geschwindigkeit
@@ -225,18 +215,13 @@ void SendeWeichenFunktion(int weichenAdresse, bool zustand)
 
 void SendeDCCPaket(byte* packet, int length) // Funktion zum Senden eines DCC-Pakets  (Übergane Paket Array, Bits im Paket)
 {
-
   for(int w = 0; w < Wiederholungen; w++)    // Sendet das Gesamte Paket 3 Mal
   {
-
-  //if ((millis() - vergangeneMillis) >= interval) 
-  //{
-
     for (int sb = 0;sb < SyncBits; sb ++)    // Sendet 17 Syncronisation´s 1-Bits 
     {
       DCC_Bit(Eins_Bit_Zeit);     // 1-Bit
     }
-  
+ 
     for (int i = 0; i < length; i++)            // Durchlaufe alle Bytes im Paket
     {
       DCC_Bit(Null_Bit_Zeit);  // Sende das Startbit vor jedem Byte
@@ -256,14 +241,7 @@ void SendeDCCPaket(byte* packet, int length) // Funktion zum Senden eines DCC-Pa
       }
     }
 
-    DCC_Bit(Eins_Bit_Zeit);                      // Ende-Bit Markiert das ende des Paketes
-
-    //delayMicroseconds(zwichenPaketZeit);    // Zeit zwichen den einzelnden dcc Paketen
-    
-    //vergangeneMillis = millis(); // Aktuelle Zeit speichern
-  
-  //}
-
+    DCC_Bit(Eins_Bit_Zeit);  // Ende-Bit Markiert das ende des Paketes
   }
 }
 

@@ -14,11 +14,15 @@ const int SWITCH_PIN = 15;
 const int OLED_SDA_PIN = 20;    // OLED SDA Pin
 const int OLED_SCL_PIN = 21;    // OLED SCL PIN
 
+const int geradePins[4] = {8, 9, 10, 11};
+const int geschaltenPins[4] = {16, 17, 18, 19};
+
+const unsigned long RelaiAnZeit = 300; // Zeit für die Relais (0.3 Sekunde)
 
 //DCC Timings
 const unsigned long Eins_Bit_Zeit = 56;         // 1/2  Timer für High/Low side des 1-Bit
 const unsigned long Null_Bit_Zeit = 118;        // 1/2  Timer für High/Low side des 0-Bit
-const unsigned long delay_Time = 5;             // Timer für die dead zeit (Verzögerung zwichen dem umschalten der H-Brücke) (MIN 5 !!)
+const unsigned long delay_Time = 2;             // Timer für die dead zeit (Verzögerung zwichen dem umschalten der H-Brücke) (MIN 5 !!)
 //tconst unsigned long zwichenPaketZeit = 500;    // Zeit zwichen den DCC Paketen (Standard 5ms)
 
 const unsigned long LETZTE_BEFEHLE_WIEDERHOLEN = 500;

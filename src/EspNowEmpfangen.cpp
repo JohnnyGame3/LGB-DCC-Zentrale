@@ -6,7 +6,7 @@
 int id = 1;
 
 // Daten für Lok 1
-int lok1 = 3;
+int lok1 = 0;
 int speed1 = 0;
 int funktion1 = 0;
 bool zustandLok1 = false;
@@ -134,7 +134,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
 
         weicheNeu = true;
         }
-        else if(tempWeichenAdresse <= 136)
+        else if(tempWeichenAdresse <= 131)
         {
           relais = tempWeichenAdresse;
           zustandRalais = doc["zustand"];
