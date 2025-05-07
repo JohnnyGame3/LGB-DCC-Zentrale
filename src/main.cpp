@@ -24,7 +24,7 @@ void setup()
   BrueckeAktivieren();
 }
  
- 
+
 void loop()
 {
   if(lok1Neu || lok2Neu || weicheNeu)
@@ -47,4 +47,3 @@ void loop()
     SchalteRelais(); // Schalte Relais ein oder aus
   }
 }
-

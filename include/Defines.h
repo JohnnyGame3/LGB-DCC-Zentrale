@@ -11,7 +11,7 @@ const int LEN_PIN = 7;         // Steuerung der H-Brücke für -24V
 
 
 const int geradePins[4] = {8, 9, 10, 11};
-const int geschaltenPins[4] = {16, 17, 18, 19};
+const int geschaltenPins[4] = {15, 16, 17, 18};
 
 const unsigned long RelaiAnZeit = 300; // Zeit für die Relais (0.3 Sekunde)
 
@@ -67,7 +67,7 @@ extern bool relaisNeu;
 
 // Alte Variablen
 const int POTI_PIN = 12;        // Pin für das Potentiometer
-const int SWITCH_PIN = 15;
+//const int SWITCH_PIN = 15;
 const int OLED_SDA_PIN = 20;    // OLED SDA Pin
 const int OLED_SCL_PIN = 21;    // OLED SCL PIN
 

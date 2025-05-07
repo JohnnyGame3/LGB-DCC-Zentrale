@@ -132,7 +132,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int len)
 
         weicheNeu = true;
         }
-        else if(tempWeichenAdresse <= 131)
+        if(tempWeichenAdresse <= 133)
         {
           weicheRelais = tempWeichenAdresse;
           zustandRalais = doc["zustand"];

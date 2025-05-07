@@ -9,31 +9,37 @@ void SetupRelais()
     {
         pinMode(geradePins[i], OUTPUT);
         pinMode(geschaltenPins[i], OUTPUT);
-        digitalWrite(geradePins[i], LOW);
-        digitalWrite(geschaltenPins[i], LOW);
+        digitalWrite(geradePins[i], HIGH);
+        digitalWrite(geschaltenPins[i], HIGH);
     }
 }
 
 void SchalteRelais() 
 {
-    if (weicheRelais < 128 || weicheRelais > 131) return;
+    if (weicheRelais < 128 || weicheRelais > 133) return;
 
-    int index = weicheRelais - 128;
+    int index = weicheRelais - 129;
 
-    if (zustandRalais == false) 
+    static bool relaisAktiv = false;
+
+    if (!relaisAktiv)
+    {
+        if (zustandRalais == false) 
+        {
+            digitalWrite(geradePins[index], LOW);
+        } 
+        else 
+        {
+            digitalWrite(geschaltenPins[index], LOW);
+        }
+        vergangeneMillisRelais = millis();  // Zeit merken
+        relaisAktiv = true;
+    }
+    else if (millis() - vergangeneMillisRelais >= RelaiAnZeit) 
     {
         digitalWrite(geradePins[index], HIGH);
-    } 
-    else 
-    {
         digitalWrite(geschaltenPins[index], HIGH);
-    }
-
-    if (millis() - vergangeneMillisRelais >= RelaiAnZeit) 
-    {
-        vergangeneMillisRelais = millis();
-        digitalWrite(geradePins[index], LOW);
-        digitalWrite(geschaltenPins[index], LOW);
         relaisNeu = false;
+        relaisAktiv = false;
     }
 }
