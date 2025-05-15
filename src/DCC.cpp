@@ -238,9 +238,9 @@ void SendeDCCPaket(byte* packet, int length) // Funktion zum Senden eines DCC-Pa
 
       byte data = packet[i];
 
-      for (int bitMask = 0x80; bitMask > 0; bitMask >>= 1) // Sende jedes Bit (MSB zuerst)
+      for (int bitMask = 0x80; bitMask > 0; bitMask >>= 1) // Sende jedes Bit (MSB zuerst) Enrstellt eine Bitmaske und verschieb dies immer um ein Bit nach Rechts
       {
-        if (data & bitMask) 
+        if (data & bitMask) //Verundet die Bitmaske mit dem Datenpaket
         {
           DCC_Bit(Eins_Bit_Zeit); // Sende eine "1"
         } 
